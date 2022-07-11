@@ -28,9 +28,7 @@
 #define HAS_HW_RDTSC 0
 #endif
 
-
-
-#define TSC_KHz 2095078
+#define TSC_KHz 2095078ull
 
 inline uint64_t rdtsc()
 {
@@ -71,3 +69,21 @@ inline uint64_t rdtsc()
       .count();
 #endif
 }
+
+class PointPorfiler {
+  public:
+  inline PointPorfiler(){}
+  ~PointPorfiler(){}
+  inline void start() {
+    start_tick_ = rdtsc();
+  }
+  inline double end()
+  {
+    uint64_t end_tick = rdtsc();
+    return static_cast<double>(end_tick - start_tick_)
+      / static_cast<double>(TSC_KHz/1000000ull);
+  }
+
+  private:
+  uint64_t start_tick_ = 0;
+};

@@ -8,13 +8,17 @@
 
 #pragma once
 #include <iostream>
+#include <gflags/gflags.h>
 
-#define LOG(...) LogWrapper(__FILE__, __LINE__, __VA_ARGS__)
+
+DEFINE_bool(debug, false, "Set if output log message");
+
+#define LOG(...) if (FLAGS_debug)LogWrapper(__FILE__, "line:", __LINE__, "\n", __VA_ARGS__)
 inline void LogWrapper() { std::cout << std::endl; }
 
 template <typename First, typename... Rest>
 inline void LogWrapper(First&& first, Rest&&... rest)
 {
-  std::cout << std::forward<First>(first) << " ";
+  std::cerr << std::forward<First>(first) << " ";
   LogWrapper(std::forward<Rest>(rest)...);
 }

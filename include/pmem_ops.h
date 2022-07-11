@@ -9,7 +9,7 @@
 #pragma once
 
 #include <gperftools/profiler.h>
-
+#include <libpmem.h>
 
 #define CACHE_LINE_SIZE 64
 
