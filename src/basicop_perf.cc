@@ -21,6 +21,7 @@
 
 #include "include/histogram.h"
 #include "include/logging.h"
+#include "include/memory_ops.h"
 #include "include/numa_config.h"
 #include "include/pmem_ops.h"
 #include "include/profiler.h"
@@ -31,15 +32,17 @@
 
 // defined in logging.h
 // DEFINE_bool(debug, false, "Set if output log message");
-DEFINE_int64(pmem_size, 5 * 1024UL * 1024UL * 1024UL,
-             "The size of test pmem space size. (default: 5GB)");
+DEFINE_uint64(pmem_size, 20 * 1024UL * 1024UL * 1024UL,
+              "The size of test pmem space size. (default: 20GB)");
 DEFINE_int32(io_size, 64, "The size of single opeartion. (default: 64B)");
 DEFINE_string(pmem_path, "/mnt/pmem0/device_perf/basicop_perf.map",
               "Path of pmem device.");
+DEFINE_string(pmem_mode, "fsdax", "Mode of device usage. Option: fsdax/devdax");
 DEFINE_int32(thread_num, 4, "Test thread of operation");
 DEFINE_int32(op_per_thread, 100000, "Test num of operations");
+DEFINE_string(operation_type, "all", "Option: all/read/write");
 DEFINE_int32(workload_type, 0,
-             "Types of workload: 0 -> zipfian(default) / 1 -> uniform");
+             "Types of workload: 0 -> zipfian(default) / 1 -> sequential / 2 -> uniform");
 DEFINE_int32(bind_cpu, 0,
              "CPU socket id of the thread want to bind: 0 (default)");
 
@@ -60,8 +63,8 @@ using WorkloadType = int32_t;
 // @3 workload type
 struct Pmem_thread_params {
   char *start_addr;
-  int64_t test_space;
-  int32_t cpu_id;
+  uint64_t test_space;
+  uint32_t cpu_id;
   WorkloadType wtype;
 };
 
@@ -74,7 +77,7 @@ void TestWriteBody(Pmem_thread_params param, utils::Histogram *histogram) {
 
   // inilization generator
   Generator<std::uint64_t> *generator = nullptr;
-  uint32_t space_unit_size = io_size > 64 ? io_size : 64;
+  uint32_t space_unit_size = io_size;
   switch (param.wtype) {
     case WorkloadTypeList::sequential:
       space_unit_size = io_size;
@@ -99,10 +102,10 @@ void TestWriteBody(Pmem_thread_params param, utils::Histogram *histogram) {
     memcpy(temp_addr, src_data, io_size);
     clflush(temp_addr, io_size);
 
-    double time_spent = pperf.end();
+    pperf.end();
 
     // record end
-    histogram->Add_Fast(time_spent);
+    histogram->Add_Fast(pperf.duration());
   }
   delete generator;
 }
@@ -116,7 +119,7 @@ void TestReadBody(Pmem_thread_params param, utils::Histogram *histogram) {
 
   // inilization generator
   Generator<std::uint64_t> *generator = nullptr;
-  uint32_t space_unit_size = io_size > 64 ? io_size : 64;
+  uint32_t space_unit_size = io_size;
   switch (param.wtype) {
     case WorkloadTypeList::sequential:
       space_unit_size = io_size;
@@ -141,9 +144,9 @@ void TestReadBody(Pmem_thread_params param, utils::Histogram *histogram) {
     memcpy(dst_data, temp_addr, io_size);
     mfence();
 
-    double time_spent = pperf.end();
+    pperf.end();
     // record end
-    histogram->Add_Fast(time_spent);
+    histogram->Add_Fast(pperf.duration());
   }
   delete generator;
 }
@@ -163,11 +166,13 @@ int main(int argc, char **argv) {
   gflags::SetUsageMessage("Usage message of pmem operation test:");
   gflags::ParseCommandLineFlags(&argc, &argv, true);
   LOG("\n--------------------configuration output-----------------");
+  LOG("pmem mode:", FLAGS_pmem_mode);
   LOG("pmem path:", FLAGS_pmem_path);
   LOG("pmem size:", FLAGS_pmem_size);
-  LOG("workload type:", PmemTickersNameMap[FLAGS_workload_type * 2].second);
-  LOG("workload type:", PmemTickersNameMap[FLAGS_workload_type * 2 + 1].second);
+  LOG("workload type:", PmemTickersNameMap[FLAGS_workload_type].second, FLAGS_operation_type);
   LOG("operation per num:", FLAGS_op_per_thread);
+  LOG("operation type:", FLAGS_operation_type);
+  LOG("bind cpu:", FLAGS_bind_cpu);
   LOG("thread num:", FLAGS_thread_num);
   LOG("------------------------end output-----------------------\n");
   // map the pmem space
@@ -176,10 +181,12 @@ int main(int argc, char **argv) {
   const uint64_t pmem_size = FLAGS_pmem_size;
   int fd = open(pmem_dev, O_RDWR | O_CREAT | O_TRUNC, 0666);
   assert(fd > 0);
-  int fres = ftruncate(fd, pmem_size);
-  if (fres != 0) {
-    LOG("Error ftruncate pmem space!");
-    exit(0);
+  if (FLAGS_pmem_mode == "fsdax") {
+    int fres = ftruncate(fd, pmem_size);
+    if (fres != 0) {
+      LOG("Error ftruncate pmem space!");
+      exit(0);
+    }
   }
   char *test_space =
       (char *)mmap(0, pmem_size, PROT_READ | PROT_WRITE, 0x8003, fd, 0);
@@ -187,64 +194,70 @@ int main(int argc, char **argv) {
 
   // each thread do write/read job ,then record it to their own histogram
   std::vector<std::thread> threads(FLAGS_thread_num);
-  std::vector<utils::Histogram> wlist(FLAGS_thread_num);
-  for (int i = 0; i < FLAGS_thread_num; i++) {
-    Pmem_thread_params p1 = {
-        .start_addr = test_space + i * (FLAGS_pmem_size / FLAGS_thread_num),
-        .test_space = FLAGS_pmem_size / FLAGS_thread_num,
-        .cpu_id = OS_CPU_ID[FLAGS_bind_cpu][i][0],
-        .wtype = FLAGS_workload_type,
-    };
-    threads[i] = std::thread(TestWriteBody, p1, &wlist[i]);
-    bind_thread_tocpu(threads[i].native_handle(), p1.cpu_id);
-  }
 
-  for (auto &t : threads) {
-    t.join();
-  }
+  // control if run the write test body
+  if (FLAGS_operation_type == "all" || FLAGS_operation_type == "write") {
+    std::vector<utils::Histogram> wlist(FLAGS_thread_num);
+    for (int i = 0; i < FLAGS_thread_num; i++) {
+      Pmem_thread_params p1 = {
+          .start_addr = RTE_PTR_ALIGN(
+              test_space + i * (FLAGS_pmem_size / FLAGS_thread_num), 16),
+          .test_space = FLAGS_pmem_size / FLAGS_thread_num,
+          .cpu_id = OS_CPU_ID[FLAGS_bind_cpu][i][0],
+          .wtype = FLAGS_workload_type,
+      };
+      threads[i] = std::thread(TestWriteBody, p1, &wlist[i]);
+      bind_thread_tocpu(threads[i].native_handle(), p1.cpu_id);
+    }
 
-  utils::Histogram merge_write_histogram;
-  for (const auto &h : wlist) {
-    merge_write_histogram.Merge(h);
-  }
-  LOG("Workload: ", PmemTickersNameMap[FLAGS_workload_type * 2].second,
-      "\nOPS : ", calculate_ops(FLAGS_thread_num, merge_write_histogram),
-      "\nThpt: ",
-      calculate_thpt(FLAGS_io_size, FLAGS_thread_num, merge_write_histogram) /
-          SizeUnit::h_gigabytes,
-      "GiB/s",
-      "\nWrite Latency Distribution: ", merge_write_histogram.ToString());
+    for (auto &t : threads) {
+      t.join();
+    }
 
+    utils::Histogram merge_write_histogram;
+    for (const auto &h : wlist) {
+      merge_write_histogram.Merge(h);
+    }
+    LOG("Workload: ", PmemTickersNameMap[FLAGS_workload_type].second, FLAGS_operation_type,
+        "\nOPS : ", calculate_ops(FLAGS_thread_num, merge_write_histogram),
+        "\nThpt: ",
+        calculate_thpt(FLAGS_io_size, FLAGS_thread_num, merge_write_histogram) /
+            SizeUnit::h_gigabytes,
+        "GiB/s",
+        "\nWrite Latency Distribution: ", merge_write_histogram.ToString());
+  }
   //------------------------------------------------------
   // Now here is read process
-  std::vector<utils::Histogram> rlist(FLAGS_thread_num);
-  for (int i = 0; i < FLAGS_thread_num; i++) {
-    Pmem_thread_params p1 = {
-        .start_addr = test_space + i * (FLAGS_pmem_size / FLAGS_thread_num),
-        .test_space = FLAGS_pmem_size / FLAGS_thread_num,
-        .cpu_id = OS_CPU_ID[FLAGS_bind_cpu][i][0],
-        .wtype = FLAGS_workload_type,
-    };
-    threads[i] = std::thread(TestReadBody, p1, &rlist[i]);
-    bind_thread_tocpu(threads[i].native_handle(), p1.cpu_id);
-  }
+  if (FLAGS_operation_type == "all" || FLAGS_operation_type == "read") {
+    std::vector<utils::Histogram> rlist(FLAGS_thread_num);
+    for (int i = 0; i < FLAGS_thread_num; i++) {
+      Pmem_thread_params p1 = {
+          .start_addr = RTE_PTR_ALIGN(
+              test_space + i * (FLAGS_pmem_size / FLAGS_thread_num), 16),
+          .test_space = FLAGS_pmem_size / FLAGS_thread_num,
+          .cpu_id = OS_CPU_ID[FLAGS_bind_cpu][i][0],
+          .wtype = FLAGS_workload_type,
+      };
+      threads[i] = std::thread(TestReadBody, p1, &rlist[i]);
+      bind_thread_tocpu(threads[i].native_handle(), p1.cpu_id);
+    }
 
-  for (auto &t : threads) {
-    t.join();
-  }
+    for (auto &t : threads) {
+      t.join();
+    }
 
-  utils::Histogram merge_read_histogram;
-  for (const auto &h : rlist) {
-    merge_read_histogram.Merge(h);
+    utils::Histogram merge_read_histogram;
+    for (const auto &h : rlist) {
+      merge_read_histogram.Merge(h);
+    }
+    LOG("Workload: ", PmemTickersNameMap[FLAGS_workload_type].second, FLAGS_operation_type,
+        "\nOPS : ", calculate_ops(FLAGS_thread_num, merge_read_histogram),
+        "\nThpt: ",
+        calculate_thpt(FLAGS_io_size, FLAGS_thread_num, merge_read_histogram) /
+            SizeUnit::h_gigabytes,
+        "GiB/s",
+        "\nRead Latency Distribution: ", merge_read_histogram.ToString());
   }
-  LOG("Workload: ", PmemTickersNameMap[FLAGS_workload_type * 2 + 1].second,
-      "\nOPS : ", calculate_ops(FLAGS_thread_num, merge_read_histogram),
-      "\nThpt: ",
-      calculate_thpt(FLAGS_io_size, FLAGS_thread_num, merge_read_histogram) /
-          SizeUnit::h_gigabytes,
-      "GiB/s",
-      "\nRead Latency Distribution: ", merge_read_histogram.ToString());
-
   // create test thread and pin them to physical cores
   // pmem is on core 0, so we need to pin thread to core 0
   // char* test_space = (char*)mmap(0, pmem_size, PROT_READ | PROT_WRITE,

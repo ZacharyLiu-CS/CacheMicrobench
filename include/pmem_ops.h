@@ -13,17 +13,16 @@
 
 #define CACHE_LINE_SIZE 64
 
-inline void mfence()
-{
-  asm volatile("mfence":::"memory");
-}
+static inline void mfence() { asm volatile("mfence" ::: "memory"); }
+__attribute__((unused))
 
-inline void clflush(char *data, int len)
-{
-  volatile char *ptr = (char *)((unsigned long)data &~(CACHE_LINE_SIZE-1));
+static inline void
+clflush(char *data, int len) {
+  volatile char *ptr = (char *)((unsigned long)data & ~(CACHE_LINE_SIZE - 1));
   mfence();
-  for(; ptr<data+len; ptr+=CACHE_LINE_SIZE){
-    asm volatile(".byte 0x66; clflush %0" : "+m" (*(volatile char *)ptr));
+  for (; ptr < data + len; ptr += CACHE_LINE_SIZE) {
+    asm volatile(".byte 0x66; clflush %0" : "+m"(*(volatile char *)ptr));
   }
   mfence();
 }
+__attribute__((unused))

@@ -13,22 +13,16 @@
 #include "histogram.h"
 
 enum PmemTickers : uint32_t {
-  ZIPF_WRITE = 0,
-  ZIPF_READ,
-  SEQ_WRITE,
-  SEQ_READ,
-  UNIF_WRITE,
-  UNIF_READ,
+  ZIPF = 0,
+  SEQ,
+  UNIF,
   TICKER_ENUM_MAX
 };
 
 const std::vector<std::pair<PmemTickers, std::string>> PmemTickersNameMap = {
-  {ZIPF_WRITE,  "microbench.zipfian.write"},
-  {ZIPF_READ,   "microbench.zipfian.read"},
-  {SEQ_WRITE,   "microbench.seq.write"},
-  {SEQ_READ,    "microbench.seq.read"},
-  {UNIF_WRITE,   "microbench.uniform.write"},
-  {UNIF_READ,    "microbench.uniform.read"}
+  {ZIPF,   "microbench.zipfian"},
+  {SEQ,    "microbench.seq"},
+  {UNIF,    "microbench.uniform"}
 };
 
 enum SizeUnit : uint32_t{

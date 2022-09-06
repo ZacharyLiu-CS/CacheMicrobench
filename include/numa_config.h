@@ -5,7 +5,7 @@ enum {
     SMT_LEVEL = 2,
 };
 
-const int OS_CPU_ID[NUM_SOCKET][NUM_PHYSICAL_CPU_PER_SOCKET][SMT_LEVEL] = {
+const unsigned int OS_CPU_ID[NUM_SOCKET][NUM_PHYSICAL_CPU_PER_SOCKET][SMT_LEVEL] = {
     { /* socket id: 0 */
         { /* physical cpu id: 0 */
           0, 40,     },

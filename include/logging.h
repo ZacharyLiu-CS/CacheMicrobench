@@ -19,6 +19,6 @@ inline void LogWrapper() { std::cout << std::endl; }
 template <typename First, typename... Rest>
 inline void LogWrapper(First&& first, Rest&&... rest)
 {
-  std::cerr << std::forward<First>(first) << " ";
+  std::cout << std::forward<First>(first) << " ";
   LogWrapper(std::forward<Rest>(rest)...);
 }

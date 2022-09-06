@@ -15,11 +15,13 @@ physical id     : => socket
 cpu cores       : => number of cores in a socket
 '''
 
+
 def get_num_socket(cpuinfo):
     socket_id_set = set()
     for cpu in cpuinfo:
         socket_id_set.add(int(cpu["physical id"]))
     return len(socket_id_set)
+
 
 def build_cpu_topology(cpuinfo_file, lang):
     cpuinfo = [dict(map(str.strip, line.split(":", 1))
@@ -30,10 +32,10 @@ def build_cpu_topology(cpuinfo_file, lang):
     socket_id_set = set()
     physical_cpu_id_set = set()
     for cpu in cpuinfo:
-        socket_id  = cpu["physical id"]
-        socket_id_set.add( int(socket_id))
+        socket_id = cpu["physical id"]
+        socket_id_set.add(int(socket_id))
         physical_cpu_id = cpu["core id"]
-        physical_cpu_id_set.add( int(physical_cpu_id))
+        physical_cpu_id_set.add(int(physical_cpu_id))
         os_cpu_id = cpu["processor"]
         key = ":".join([socket_id, physical_cpu_id])
         topology_map.setdefault(key, []).append(os_cpu_id)
@@ -45,6 +47,7 @@ def build_cpu_topology(cpuinfo_file, lang):
                                      physical_cpu_id_set)
     else:
         print("Unknow language: %s\n" % lang)
+
 
 def print_cpu_topology_in_c(cpuinfo, topology_map, socket_id_set, physical_cpu_id_set):
     num_socket = get_num_socket(cpuinfo)
@@ -59,19 +62,20 @@ def print_cpu_topology_in_c(cpuinfo, topology_map, socket_id_set, physical_cpu_i
     print("};")
     print("")
 
-    print("const int OS_CPU_ID[%s][%s][%s] = {"
+    print("const unsigned int OS_CPU_ID[%s][%s][%s] = {"
           % ("NUM_SOCKET", "NUM_PHYSICAL_CPU_PER_SOCKET", "SMT_LEVEL"))
     for socket_id in sorted(socket_id_set):
         print("    { /* socket id: %s */" % socket_id)
         for physical_cpu_id in sorted(physical_cpu_id_set):
             key = ":".join([str(socket_id), str(physical_cpu_id)])
             print("        { /* physical cpu id: %s */" % physical_cpu_id)
-            print("          ", end = "")
+            print("          ", end="")
             for (smt_id, os_cpu_id) in enumerate(topology_map[key]):
-                print("%s, " % os_cpu_id, end = "")
-            print("    },") # physical cpu id
-        print("    },") # socket id
+                print("%s, " % os_cpu_id, end="")
+            print("    },")  # physical cpu id
+        print("    },")  # socket id
     print("};")
+
 
 def print_cpu_topology_in_python(cpuinfo, topology_map, socket_id_set, physical_cpu_id_set):
     num_socket = get_num_socket(cpuinfo)
@@ -93,6 +97,7 @@ def print_cpu_topology_in_python(cpuinfo, topology_map, socket_id_set, physical_
                       (socket_id, physical_cpu_id, smt_id, os_cpu_id))
     print("")
 
+
 def parse_option():
     """Parse command line opetion"""
     # arg parser
@@ -109,7 +114,7 @@ def parse_option():
     # return args
     return (cpuinfo, lang)
 
+
 if __name__ == "__main__":
     (cpuinfo, lang) = parse_option()
     build_cpu_topology(cpuinfo, lang)
-

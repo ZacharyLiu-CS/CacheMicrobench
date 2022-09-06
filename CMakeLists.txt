@@ -48,7 +48,6 @@ foreach(testsourcefile ${MAIN_FILE})
   target_link_libraries(${testname}
     gflags
     pthread
-    hwloc
     )
 ENDFOREACH(testsourcefile ${TEST_FILE})
 
@@ -59,6 +58,6 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/compile_commands.json")
     )
 endif()
 execute_process(
-  COMMAND ln -s ${PROJECT_SOURCE_DIR}/build/compile_commands.json ${PROJECT_SOURCE_DIR}/compile_commands.json
+  COMMAND ln -s -f ${PROJECT_SOURCE_DIR}/build/compile_commands.json ${PROJECT_SOURCE_DIR}/compile_commands.json
   )
 
