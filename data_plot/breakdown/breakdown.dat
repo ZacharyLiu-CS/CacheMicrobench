@@ -1,0 +1,4 @@
+Type  index-read     index-write   pbrb-read    pbrb-write  pmem-read     pmem-write 
+insert     0          1519.75          0             0         0            940.91
+read     985.67         0            136.55       136.40       1157.72        0
+update   910.90         0              0            0          342.3         290.2

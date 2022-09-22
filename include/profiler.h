@@ -28,7 +28,7 @@
 #define HAS_HW_RDTSC 0
 #endif
 
-#define TSC_KHz 2095078ull
+#define TSC_Hz (2095078ull<<10)
 
 inline uint64_t rte_rdtsc() {
   union {
@@ -85,7 +85,7 @@ class PointPorfiler {
   inline double end() {
     uint64_t end_tick = rte_rdtsc();
     return duration_ = static_cast<double>(end_tick - start_tick_) /
-           static_cast<double>(TSC_KHz / 1000000ull);
+           static_cast<double>(TSC_Hz / 1000000ull);
   }
 
   inline double duration(){

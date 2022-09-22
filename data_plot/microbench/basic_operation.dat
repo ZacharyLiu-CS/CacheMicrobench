@@ -1,0 +1,5 @@
+      Type  pmrocksdb     pmemkv   fastfair    neopmkv      utree     listdb
+    insert     100.59      78.14     147.68     163.86      113.7      113.7
+      read     127.66     331.07     360.99     478.75     400.89     400.89
+    update      70.76     118.02     148.13     401.23      121.1      121.1
+      scan       7.65       9.74          0       8.69          0          0

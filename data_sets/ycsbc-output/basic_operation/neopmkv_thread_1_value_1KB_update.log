@@ -1,0 +1,83 @@
+we got schema id: 1
+# Loading records:	10000000
+Load Perf: neopmkv	../workloads/update_1KB.spec	1	177496 OPS
+Record unit : microseconds
+Count: 10000000  Average: 5.5986  StdDev: 13.84
+Sum: 55985548.1980  Min: 3.3260  Median: 5.1268  Max: 2124.9050
+------------------------------------------------------
+[       3,       4 )   97692   0.977%   0.977% 
+[       4,       5 ) 4303837  43.038%  44.015% #########
+[       5,       6 ) 4720033  47.200%  91.216% #########
+[       6,       7 )  448398   4.484%  95.700% #
+[       7,       8 )  228963   2.290%  97.989% 
+[       8,       9 )   96254   0.963%  98.952% 
+[       9,      10 )   21788   0.218%  99.170% 
+[      10,      12 )    8641   0.086%  99.256% 
+[      12,      14 )    3935   0.039%  99.295% 
+[      14,      16 )   12787   0.128%  99.423% 
+[      16,      18 )   17053   0.171%  99.594% 
+[      18,      20 )    5070   0.051%  99.645% 
+[      20,      25 )   28705   0.287%  99.932% 
+[      25,      30 )     841   0.008%  99.940% 
+[      30,      35 )     318   0.003%  99.943% 
+[      35,      40 )      56   0.001%  99.944% 
+[      40,      45 )      23   0.000%  99.944% 
+[      45,      50 )      12   0.000%  99.944% 
+[      50,      60 )      78   0.001%  99.945% 
+[      60,      70 )      21   0.000%  99.945% 
+[      70,      80 )      11   0.000%  99.945% 
+[      80,      90 )       7   0.000%  99.945% 
+[      90,     100 )       9   0.000%  99.945% 
+[     100,     120 )       8   0.000%  99.945% 
+[     120,     140 )       1   0.000%  99.945% 
+[     140,     160 )       2   0.000%  99.945% 
+[     160,     180 )       1   0.000%  99.945% 
+[     500,     600 )    3481   0.035%  99.980% 
+[     600,     700 )    1873   0.019%  99.999% 
+[     700,     800 )      83   0.001% 100.000% 
+[     800,     900 )      16   0.000% 100.000% 
+[     900,    1000 )       2   0.000% 100.000% 
+[    2000,    2500 )       1   0.000% 100.000% 
+
+# Transaction count:	10000000
+Run Perf: neopmkv	../workloads/update_1KB.spec	1	403264 OPS
+Record unit : microseconds
+Count: 10000000  Average: 2.4458  StdDev: 1.00
+Sum: 24457856.7650  Min: 1.1380  Median: 2.3705  Max: 117.0180
+------------------------------------------------------
+[       1,       2 ) 2884313  28.843%  28.843% ######
+[       2,       3 ) 5710556  57.106%  85.949% ###########
+[       3,       4 ) 1310447  13.104%  99.053% ###
+[       4,       5 )   43292   0.433%  99.486% 
+[       5,       6 )   12670   0.127%  99.613% 
+[       6,       7 )    4411   0.044%  99.657% 
+[       7,       8 )    2619   0.026%  99.683% 
+[       8,       9 )    1332   0.013%  99.696% 
+[       9,      10 )     536   0.005%  99.702% 
+[      10,      12 )     507   0.005%  99.707% 
+[      12,      14 )    9193   0.092%  99.799% 
+[      14,      16 )    4891   0.049%  99.848% 
+[      16,      18 )    1586   0.016%  99.864% 
+[      18,      20 )   11465   0.115%  99.978% 
+[      20,      25 )    1856   0.019%  99.997% 
+[      25,      30 )     157   0.002%  99.998% 
+[      30,      35 )      83   0.001%  99.999% 
+[      35,      40 )      12   0.000%  99.999% 
+[      40,      45 )       7   0.000%  99.999% 
+[      45,      50 )      13   0.000%  99.999% 
+[      50,      60 )      27   0.000% 100.000% 
+[      60,      70 )      12   0.000% 100.000% 
+[      70,      80 )       2   0.000% 100.000% 
+[      80,      90 )       7   0.000% 100.000% 
+[      90,     100 )       4   0.000% 100.000% 
+[     100,     120 )       2   0.000% 100.000% 
+
+print neopmkv statistics: 
+Missing operations count : 0
+[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:264 @outputReadStat INFO] Thread:[139763181061120] Index: Query Count: 10000000, Total Time Cost: 8.77 s, Average Time Cost: 877.08 ns
+[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:271 @outputReadStat INFO] Thread:[139763181061120] Index: insert Count: 10000000, Total Time Cost: 13.16 s, Average Time Cost: 1316.43 ns
+[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:278 @outputReadStat INFO] Thread:[139763181061120] PMem: Read Count: 0, Total Time Cost: 0.00 s, Average Time Cost: -nan ns
+[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:285 @outputReadStat INFO] Thread:[139763181061120] PMem: Write Count: 10000000, Total Time Cost: 9.41 s, Average Time Cost: 940.73 ns
+[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:292 @outputReadStat INFO] Thread:[139763181061120] PMem: Update Count: 10000000, Total Time Cost: 6.32 s, Average Time Cost: 631.79 ns
+[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:299 @outputReadStat INFO] Thread:[139763181061120] PBRB: Read Count: 0, Total Time Cost: 0.00 s, Average Time Cost: -nan ns
+[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:306 @outputReadStat INFO] Thread:[139763181061120] PBRB: Write Count: 0, Total Time Cost: 0.00 s, Average Time Cost: -nan ns
