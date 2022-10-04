@@ -1,93 +1,84 @@
 we got schema id: 1
 # Loading records:	10000000
-Load Perf: neopmkv	../workloads/scan_1KB.spec	1	173396 OPS
+Load Perf: neopmkv	../workloads/scan_1KB.spec	1	176924 OPS
 Record unit : microseconds
-Count: 10000000  Average: 5.7319  StdDev: 15.71
-Sum: 57318500.2860  Min: 3.2260  Median: 5.2215  Max: 16069.6560
+Count: 10000000  Average: 5.6172  StdDev: 15.33
+Sum: 56172282.7280  Min: 3.3500  Median: 5.1412  Max: 21448.5050
 ------------------------------------------------------
-[       3,       4 )   77743   0.777%   0.777% 
-[       4,       5 ) 3834773  38.348%  39.125% ########
-[       5,       6 ) 4908709  49.087%  88.212% ##########
-[       6,       7 )  599159   5.992%  94.204% #
-[       7,       8 )  282075   2.821%  97.025% #
-[       8,       9 )  138404   1.384%  98.409% 
-[       9,      10 )   45984   0.460%  98.868% 
-[      10,      12 )   20053   0.201%  99.069% 
-[      12,      14 )    7339   0.073%  99.142% 
-[      14,      16 )   20477   0.205%  99.347% 
-[      16,      18 )   17099   0.171%  99.518% 
-[      18,      20 )    5609   0.056%  99.574% 
-[      20,      25 )   34752   0.348%  99.922% 
-[      25,      30 )    1339   0.013%  99.935% 
-[      30,      35 )     590   0.006%  99.941% 
-[      35,      40 )     168   0.002%  99.943% 
-[      40,      45 )      79   0.001%  99.944% 
-[      45,      50 )      48   0.000%  99.944% 
-[      50,      60 )      76   0.001%  99.945% 
-[      60,      70 )      29   0.000%  99.945% 
-[      70,      80 )      15   0.000%  99.945% 
-[      80,      90 )       9   0.000%  99.945% 
-[      90,     100 )       5   0.000%  99.945% 
-[     100,     120 )       4   0.000%  99.945% 
-[     120,     140 )       3   0.000%  99.945% 
-[     180,     200 )       1   0.000%  99.945% 
-[     200,     250 )       1   0.000%  99.945% 
-[     500,     600 )    2823   0.028%  99.974% 
-[     600,     700 )    2466   0.025%  99.998% 
-[     700,     800 )      64   0.001%  99.999% 
-[     800,     900 )      85   0.001% 100.000% 
-[     900,    1000 )      14   0.000% 100.000% 
-[    1000,    1200 )       3   0.000% 100.000% 
-[   14000,   16000 )       1   0.000% 100.000% 
-[   16000,   18000 )       1   0.000% 100.000% 
+[       3,       4 )   70473   0.705%   0.705% 
+[       4,       5 ) 4258081  42.581%  43.286% #########
+[       5,       6 ) 4755890  47.559%  90.844% ##########
+[       6,       7 )  472956   4.730%  95.574% #
+[       7,       8 )  232478   2.325%  97.899% 
+[       8,       9 )  101529   1.015%  98.914% 
+[       9,      10 )   23004   0.230%  99.144% 
+[      10,      12 )   10618   0.106%  99.250% 
+[      12,      14 )    4195   0.042%  99.292% 
+[      14,      16 )   13681   0.137%  99.429% 
+[      16,      18 )   15471   0.155%  99.584% 
+[      18,      20 )    5233   0.052%  99.636% 
+[      20,      25 )   29654   0.297%  99.933% 
+[      25,      30 )     842   0.008%  99.941% 
+[      30,      35 )     342   0.003%  99.944% 
+[      35,      40 )      67   0.001%  99.945% 
+[      40,      45 )      17   0.000%  99.945% 
+[      45,      50 )       4   0.000%  99.945% 
+[      50,      60 )       8   0.000%  99.945% 
+[      60,      70 )       1   0.000%  99.945% 
+[     500,     600 )    3736   0.037%  99.983% 
+[     600,     700 )    1616   0.016%  99.999% 
+[     700,     800 )      86   0.001% 100.000% 
+[     800,     900 )      16   0.000% 100.000% 
+[     900,    1000 )       1   0.000% 100.000% 
+[   20000,   25000 )       1   0.000% 100.000% 
 
-[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/pbrb.cc:411 @write INFO] Thread:[140465196226304] A new schema (sid: 1) will be inserted into _bufferMap:
-[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/pbrb.cc:72 @createCacheForSchema INFO] Thread:[140465196226304] createCacheForSchema, schemaId: 1, pagePtr empty:false, _freePageList size:1310720, pageSize: 4096, blbs.rowSize: 1168, _bufferMap[1].rowSize: 1168, maxRowCnt: 3
+[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/pbrb.cc:411 @write INFO] Thread:[139654523242240] A new schema (sid: 1) will be inserted into _bufferMap:
+[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/pbrb.cc:72 @createCacheForSchema INFO] Thread:[139654523242240] createCacheForSchema, schemaId: 1, pagePtr empty:false, _freePageList size:1310720, pageSize: 4096, blbs.rowSize: 1168, _bufferMap[1].rowSize: 1168, maxRowCnt: 3
 # Transaction count:	10000
-Run Perf: neopmkv	../workloads/scan_1KB.spec	1	8691.74 OPS
+Run Perf: neopmkv	../workloads/scan_1KB.spec	1	8447.74 OPS
 Record unit : microseconds
-Count: 10000  Average: 114.9737  StdDev: 73.17
-Sum: 1149737.2360  Min: 3.0660  Median: 103.0571  Max: 391.9460
+Count: 10000  Average: 118.3035  StdDev: 69.34
+Sum: 1183035.4640  Min: 3.5710  Median: 112.9593  Max: 344.4600
 ------------------------------------------------------
-[       3,       4 )       3   0.030%   0.030% 
-[       4,       5 )      11   0.110%   0.140% 
-[       5,       6 )      16   0.160%   0.300% 
-[       6,       7 )      37   0.370%   0.670% 
-[       7,       8 )      50   0.500%   1.170% 
-[       8,       9 )      51   0.510%   1.680% 
-[       9,      10 )      49   0.490%   2.170% 
-[      10,      12 )      88   0.880%   3.050% 
-[      12,      14 )     108   1.080%   4.130% 
-[      14,      16 )     122   1.220%   5.350% 
-[      16,      18 )     106   1.060%   6.410% 
-[      18,      20 )     105   1.050%   7.460% 
-[      20,      25 )     251   2.510%   9.970% #
-[      25,      30 )     247   2.470%  12.440% 
-[      30,      35 )     262   2.620%  15.060% #
-[      35,      40 )     237   2.370%  17.430% 
-[      40,      45 )     287   2.870%  20.300% #
-[      45,      50 )     288   2.880%  23.180% #
-[      50,      60 )     446   4.460%  27.640% #
-[      60,      70 )     575   5.750%  33.390% #
-[      70,      80 )     524   5.240%  38.630% #
-[      80,      90 )     499   4.990%  43.620% #
-[      90,     100 )     496   4.960%  48.580% #
-[     100,     120 )     929   9.290%  57.870% ##
-[     120,     140 )     792   7.920%  65.790% ##
-[     140,     160 )     633   6.330%  72.120% #
-[     160,     180 )     535   5.350%  77.470% #
-[     180,     200 )     590   5.900%  83.370% #
-[     200,     250 )    1225  12.250%  95.620% ##
-[     250,     300 )     415   4.150%  99.770% #
-[     300,     350 )      21   0.210%  99.980% 
-[     350,     400 )       2   0.020% 100.000% 
+[       3,       4 )       5   0.050%   0.050% 
+[       4,       5 )       5   0.050%   0.100% 
+[       5,       6 )      18   0.180%   0.280% 
+[       6,       7 )      39   0.390%   0.670% 
+[       7,       8 )      37   0.370%   1.040% 
+[       8,       9 )      51   0.510%   1.550% 
+[       9,      10 )      50   0.500%   2.050% 
+[      10,      12 )      79   0.790%   2.840% 
+[      12,      14 )     101   1.010%   3.850% 
+[      14,      16 )     100   1.000%   4.850% 
+[      16,      18 )     100   1.000%   5.850% 
+[      18,      20 )      92   0.920%   6.770% 
+[      20,      25 )     236   2.360%   9.130% 
+[      25,      30 )     249   2.490%  11.620% 
+[      30,      35 )     236   2.360%  13.980% 
+[      35,      40 )     220   2.200%  16.180% 
+[      40,      45 )     237   2.370%  18.550% 
+[      45,      50 )     243   2.430%  20.980% 
+[      50,      60 )     391   3.910%  24.890% #
+[      60,      70 )     524   5.240%  30.130% #
+[      70,      80 )     470   4.700%  34.830% #
+[      80,      90 )     465   4.650%  39.480% #
+[      90,     100 )     463   4.630%  44.110% #
+[     100,     120 )     909   9.090%  53.200% ##
+[     120,     140 )     845   8.450%  61.650% ##
+[     140,     160 )     742   7.420%  69.070% #
+[     160,     180 )     752   7.520%  76.590% ##
+[     180,     200 )     775   7.750%  84.340% ##
+[     200,     250 )    1409  14.090%  98.430% ###
+[     250,     300 )     148   1.480%  99.910% 
+[     300,     350 )       9   0.090% 100.000% 
 
 print neopmkv statistics: 
 Missing operations count : 0
-[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/include/pbrb.h:314 @outputHitRatios INFO] Thread:[140470712534016] SchemaId: 1, Hit Ratio: 180207 / 505649 = 0.36
-[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:244 @outputReadStat INFO] Thread:[140470712534016] Index: Query Count: 0, Total Time Cost: 0.00 s, Average Time Cost: -nan ns
-[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:251 @outputReadStat INFO] Thread:[140470712534016] Index: insert Count: 10000000, Total Time Cost: 14.13 s, Average Time Cost: 1413.18 ns
-[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:258 @outputReadStat INFO] Thread:[140470712534016] PMem: Read Count: 325442, Total Time Cost: 0.39 s, Average Time Cost: 1198.34 ns
-[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:265 @outputReadStat INFO] Thread:[140470712534016] PMem: Write Count: 10000000, Total Time Cost: 9.55 s, Average Time Cost: 955.12 ns
-[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:272 @outputReadStat INFO] Thread:[140470712534016] PBRB: Read Count: 180207, Total Time Cost: 0.02 s, Average Time Cost: 134.50 ns
-[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:279 @outputReadStat INFO] Thread:[140470712534016] PBRB: Write Count: 325442, Total Time Cost: 0.05 s, Average Time Cost: 144.75 ns
+[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/include/pbrb.h:314 @outputHitRatios INFO] Thread:[139660047680512] SchemaId: 1, Hit Ratio: 0 / 505649 = 0.00
+[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:275 @outputReadStat INFO] Thread:[139660047680512] Index: Query Count: 10000, Total Time Cost: 0.02 s, Average Time Cost: 1807.96 ns
+[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:282 @outputReadStat INFO] Thread:[139660047680512] Index: insert Count: 10000000, Total Time Cost: 13.10 s, Average Time Cost: 1309.80 ns
+[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:289 @outputReadStat INFO] Thread:[139660047680512] PMem: Read Count: 505649, Total Time Cost: 0.52 s, Average Time Cost: 1036.39 ns
+[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:296 @outputReadStat INFO] Thread:[139660047680512] PMem: Write Count: 10000000, Total Time Cost: 9.43 s, Average Time Cost: 943.45 ns
+[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:303 @outputReadStat INFO] Thread:[139660047680512] PMem: Update Count: 0, Total Time Cost: 0.00 s, Average Time Cost: -nan ns
+[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:310 @outputReadStat INFO] Thread:[139660047680512] PBRB: Read Count: 0, Total Time Cost: 0.00 s, Average Time Cost: -nan ns
+[/home/kvgroup/zhenliu/cache_project/baselines/NeoPMKV/src/neopmkv.cc:317 @outputReadStat INFO] Thread:[139660047680512] PBRB: Write Count: 505649, Total Time Cost: 0.02 s, Average Time Cost: 43.83 ns

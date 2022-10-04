@@ -29,7 +29,7 @@
 #include "include/statistics.h"
 #include "include/uniform_generator.h"
 #include "include/zipfian_generator.h"
-
+#include "include/dont_optimize_away.h"
 // defined in logging.h
 // DEFINE_bool(debug, false, "Set if output log message");
 DEFINE_uint64(pmem_size, 20 * 1024UL * 1024UL * 1024UL,
@@ -42,7 +42,8 @@ DEFINE_int32(thread_num, 4, "Test thread of operation");
 DEFINE_int32(op_per_thread, 100000, "Test num of operations");
 DEFINE_string(operation_type, "all", "Option: all/read/write");
 DEFINE_int32(workload_type, 0,
-             "Types of workload: 0 -> zipfian(default) / 1 -> sequential / 2 -> uniform");
+             "Types of workload: 0 -> zipfian(default) / 1 -> sequential / 2 "
+             "-> uniform");
 DEFINE_int32(bind_cpu, 0,
              "CPU socket id of the thread want to bind: 0 (default)");
 
@@ -71,6 +72,7 @@ struct Pmem_thread_params {
 void TestWriteBody(Pmem_thread_params param, utils::Histogram *histogram) {
   // LOG("\n", (void*)param.start_addr, param.test_space, param.cpu_id,
   // param.wtype);
+  //
   uint32_t io_size = FLAGS_io_size;
   char src_data[io_size];
   memset(src_data, 'I', io_size);
@@ -103,6 +105,7 @@ void TestWriteBody(Pmem_thread_params param, utils::Histogram *histogram) {
     clflush(temp_addr, io_size);
 
     pperf.end();
+    dont_optimize_away<char*>(src_data);
 
     // record end
     histogram->Add_Fast(pperf.duration());
@@ -147,6 +150,8 @@ void TestReadBody(Pmem_thread_params param, utils::Histogram *histogram) {
     pperf.end();
     // record end
     histogram->Add_Fast(pperf.duration());
+
+    dont_optimize_away<char*>(dst_data);
   }
   delete generator;
 }
@@ -169,7 +174,8 @@ int main(int argc, char **argv) {
   LOG("pmem mode:", FLAGS_pmem_mode);
   LOG("pmem path:", FLAGS_pmem_path);
   LOG("pmem size:", FLAGS_pmem_size);
-  LOG("workload type:", PmemTickersNameMap[FLAGS_workload_type].second, FLAGS_operation_type);
+  LOG("workload type:", PmemTickersNameMap[FLAGS_workload_type].second,
+      FLAGS_operation_type);
   LOG("operation per num:", FLAGS_op_per_thread);
   LOG("operation type:", FLAGS_operation_type);
   LOG("bind cpu:", FLAGS_bind_cpu);
@@ -218,7 +224,8 @@ int main(int argc, char **argv) {
     for (const auto &h : wlist) {
       merge_write_histogram.Merge(h);
     }
-    LOG("Workload: ", PmemTickersNameMap[FLAGS_workload_type].second, FLAGS_operation_type,
+    LOG("Workload: ", PmemTickersNameMap[FLAGS_workload_type].second,
+        FLAGS_operation_type,
         "\nOPS : ", calculate_ops(FLAGS_thread_num, merge_write_histogram),
         "\nThpt: ",
         calculate_thpt(FLAGS_io_size, FLAGS_thread_num, merge_write_histogram) /
@@ -250,7 +257,8 @@ int main(int argc, char **argv) {
     for (const auto &h : rlist) {
       merge_read_histogram.Merge(h);
     }
-    LOG("Workload: ", PmemTickersNameMap[FLAGS_workload_type].second, FLAGS_operation_type,
+    LOG("Workload: ", PmemTickersNameMap[FLAGS_workload_type].second,
+        FLAGS_operation_type,
         "\nOPS : ", calculate_ops(FLAGS_thread_num, merge_read_histogram),
         "\nThpt: ",
         calculate_thpt(FLAGS_io_size, FLAGS_thread_num, merge_read_histogram) /
